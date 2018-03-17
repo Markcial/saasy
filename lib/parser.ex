@@ -1,14 +1,16 @@
 defmodule Saasy.Parser do
   @moduledoc """
-  Abstract class for every parser that the loader might be able to need
-  """
-
-  @doc """
   Makes this module extendable so the other parsers can acquire the parse method
   Due to different implementations of the several parsers this function is done with
   a try catch block so even with different implementations we can be sure that
   this function is safe from exceptions
   """
+
+  @typedoc """
+  The available parsers.
+  """
+  @type parser :: Saasy.Parser.Yml | Saasy.Parser.Json
+
   defmacro __using__(opts \\ []) do
     engine = Keyword.get(opts, :engine)
     ep = Keyword.get(opts, :ep, :decode)
@@ -17,6 +19,7 @@ defmodule Saasy.Parser do
       @doc """
       Parses the text with the engine provided in the use call.
       """
+      @spec parse(String.t) :: {:ok, List.t | Map.t | Keyword.t} | {:error, String.t}
       def parse(text) do
         try do
           case apply(unquote(engine), unquote(ep), [text]) do
@@ -31,6 +34,7 @@ defmodule Saasy.Parser do
       @doc """
       Imperative method for parseing the source with the engine provided by the module configuration.
       """
+      @spec parse!(String.t) :: List.t | Map.t | Keyword.t
       def parse!(text) do
         case parse(text) do
           {:ok, parsed} -> parsed
@@ -43,6 +47,7 @@ defmodule Saasy.Parser do
   @doc """
   Gets data parser by extension without side effects
   """
+  @spec get(String.t) :: {:ok, parser} | {:error, String.t}
   def get(filename) do
     case Path.extname(filename) do
       ".yml" -> {:ok, Saasy.Parser.Yml}
@@ -55,6 +60,7 @@ defmodule Saasy.Parser do
   @doc """
   Retrieves the data parser in an imperative style
   """
+  @spec get!(String.t) :: parser
   def get!(filename) do
     case get(filename) do
       {:ok, parser} -> parser
@@ -65,6 +71,7 @@ defmodule Saasy.Parser do
   @doc """
   Reads content from a file and converts it to a data structure
   """
+  @spec parse(String.t) :: {:ok, List.t | Keyword.t | Map.t} | {:error, String.t}
   def parse(filename) do
     case File.read(filename) do
       {:ok, contents} ->
@@ -81,10 +88,11 @@ defmodule Saasy.Parser do
   @doc """
   Imperative style of the parse method
   """
+  @spec parse!(String.t) :: List.t | Keyword.t | Map.t
   def parse!(filename) do
     case parse(filename) do
       {:ok, parsed} -> parsed
-      e = {:err, _} -> raise e
+      {:error, msg} -> raise msg
     end
   end
 end
