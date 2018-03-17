@@ -23,4 +23,7 @@ erl_crash.dump
 saasy-*.tar
 
 # Ignore language server folder
-.elixir_ls
+.elixir_ls/
+
+# Ignore .vscode settings
+.vscode/

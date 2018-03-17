@@ -3,16 +3,30 @@ defmodule Saasy do
   Documentation for Saasy.
   """
 
+  @feeds_folder Application.get_env(:saasy, :feeds_folder)
+
+  @doc "Gets the configured folder where the saas files will be located"
+  def feeds_folder, do: @feeds_folder
+
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Saasy.hello
-      :world
-
+  Gets data loader by extension without side effects
   """
-  def hello do
-    :world
+  def get_loader(filename) do
+    case Path.extname(filename) do
+      ".yml" -> {:ok, Saasy.Loader.Yml}
+      ".yaml" -> {:ok, Saasy.Loader.Yml}
+      ".json" -> {:ok, Saasy.Loader.Json}
+      _ -> {:error, "Not Implemented!"}
+    end
+  end
+
+  @doc """
+  Retrieves the data loader in an imperative style
+  """
+  def get_loader!(filename) do
+    case get_loader(filename) do
+      {:ok, loader} -> loader
+      {:error, error} -> raise error
+    end
   end
 end

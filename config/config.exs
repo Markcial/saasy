@@ -8,6 +8,9 @@ use Mix.Config
 # if you want to provide default values for your application for
 # 3rd-party users, it should be done in your "mix.exs" file.
 
+config :saasy,
+  feeds_folder: "./input/feed-products"
+
 # You can configure your application as:
 #
 #     config :saasy, key: :value
