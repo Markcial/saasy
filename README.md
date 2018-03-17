@@ -34,6 +34,14 @@ Execute the task named `docker`
 $ mix docker
 ```
 
+## Check coverage status
+
+`$ mix cover` Will create a coverage and open the report on your default browser.
+
+## Check the docs
+
+`$ mix rtfm` Generates documentation and opens it on your default browser.
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed

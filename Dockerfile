@@ -1,4 +1,4 @@
-FROM elixir:1.6 as builder
+FROM elixir:1.6-alpine as builder
 
 ENV MIX_ENV prod
 
@@ -20,10 +20,10 @@ COPY . .
 # Compile the entire project
 RUN mix compile && mix escript.build
 
-FROM elixir:1.6
+FROM elixir:1.6-alpine
 
 WORKDIR /application
 
-COPY --from=build /build/saasy /application/saasy
+COPY --from=builder /build/saasy /application/saasy
 
-CMD ["/application/saasy"]
+ENTRYPOINT ["/application/saasy"]

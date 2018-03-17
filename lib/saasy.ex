@@ -1,6 +1,6 @@
 defmodule Saasy do
   @moduledoc """
-  #{File.stream!("README.md") |> Enum.drop(1) |> Enum.join("\n")}
+  #{File.stream!("README.md") |> Enum.drop(1) |> Enum.join("")}
   """
   alias Saasy.{Parser, Normalizer}
 

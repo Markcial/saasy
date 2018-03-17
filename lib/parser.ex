@@ -36,8 +36,6 @@ defmodule Saasy.Parser do
       """
       @spec parse!(String.t()) :: List.t() | Map.t() | Keyword.t()
       def parse!(text) do
-        IO.inspect(parse(text))
-
         case parse(text) do
           {:ok, parsed} -> parsed
           e = {:error, _} -> raise e

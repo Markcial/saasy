@@ -15,19 +15,32 @@ defmodule Saasy.MixProject do
       # escript configuration
       escript: [main_module: Saasy.Cli],
 
+      # Coverage
+      test_coverage: [
+        tool: Coverex.Task
+      ],
+
       # Docs
       name: "Saasy",
       source_url: "https://github.com/markcial/saasy",
       homepage_url: "http://github.com/markcial/saasy",
       # The main page in the docs
-      docs: [main: "Saasy", extras: ["README.md"]]
+      docs: [main: "Saasy", extras: ["README.md"]],
+
+      # Task environments
+      preferred_cli_env: [
+        cover: :test,
+        rtfm: :dev
+      ]
     ]
   end
 
   defp aliases do
     [
       saasy: &saasy_cli_main/1,
-      docker: &docker/1
+      docker: &docker/1,
+      cover: &coverage/1,
+      rtfm: &rtfm/1
     ]
   end
 
@@ -38,13 +51,37 @@ defmodule Saasy.MixProject do
   end
 
   defp docker(_) do
-    Mix.Shell.IO.error("Pending implementation")
+    Mix.Shell.cmd(
+      "docker build -t saasy .",
+      fn out ->
+        Mix.Shell.IO.info(out)
+      end
+    )
+    Mix.Shell.IO.info(~S"""
+    Docker image build successfully
+    ==============================
+    Execute it with the documents on the data volume.
+    Exple.: docker run --rm \
+        -v $(pwd)/input:/application/input \
+        saasy --provider capterra
+    """)
+  end
+
+  defp coverage(_) do
+    Mix.Task.run("test", ["--cover"])
+    System.cmd("open", ["cover/modules.html"])
+  end
+
+  defp rtfm(_) do
+    Mix.Task.run("compile")
+    Mix.Task.run("docs")
+    System.cmd("open", ["doc/index.html"])
   end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :yamerl, :bunt]
+      extra_applications: [:logger, :yamerl]
     ]
   end
 
@@ -53,7 +90,8 @@ defmodule Saasy.MixProject do
     [
       {:yamerl, "~> 0.4.0"},
       {:jason, "~> 1.0"},
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:coverex, "~> 1.4.10", only: [:dev,:test], runtime: false},
+      {:ex_doc, "~> 0.16", only: [:dev,:test], runtime: false},
       {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false}
     ]
   end
