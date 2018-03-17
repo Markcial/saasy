@@ -9,7 +9,7 @@ defmodule Saasy.Normalizer.Capterra do
   @doc """
   Normalizes a single item by the convention stablished with capterra.
   """
-  @spec normalize_item(List.t | Keyword.t | Map.t) :: {:ok, Keyword.t} | {:error, String.t}
+  @spec normalize_item(List.t() | Keyword.t() | Map.t()) :: {:ok, List.t()} | {:error, String.t()}
   def normalize_item(itm) do
     try do
       out =
@@ -38,7 +38,8 @@ defmodule Saasy.Normalizer.Capterra do
   @doc """
   Normalizes the collection by the convention stablished with capterra.
   """
-  @spec normalize_collection(List.t | Keyword.t | Map.t) :: {:ok, List.t} | {:error, String.t}
+  @spec normalize_collection(List.t() | Keyword.t() | Map.t()) ::
+          {:ok, List.t()} | {:error, String.t()}
   def normalize_collection(data) do
     try do
       {:ok, get_in(data, [Access.at(0)])}

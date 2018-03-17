@@ -21,12 +21,12 @@ defmodule Saasy.Normalizer.SoftwareadviceTest do
               [
                 %{
                   categories: ["Customer Service", "Call Center"],
-                  title: "Freshdesk",
+                  name: "Freshdesk",
                   twitter: "@freshdesk"
                 },
                 %{
                   categories: ["CRM", "Sales Management"],
-                  title: "Zoho"
+                  name: "Zoho"
                 }
               ]}
   end

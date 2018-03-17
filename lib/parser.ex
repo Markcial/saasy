@@ -19,7 +19,7 @@ defmodule Saasy.Parser do
       @doc """
       Parses the text with the engine provided in the use call.
       """
-      @spec parse(String.t) :: {:ok, List.t | Map.t | Keyword.t} | {:error, String.t}
+      @spec parse(String.t()) :: {:ok, List.t() | Map.t() | Keyword.t()} | {:error, String.t()}
       def parse(text) do
         try do
           case apply(unquote(engine), unquote(ep), [text]) do
@@ -34,8 +34,10 @@ defmodule Saasy.Parser do
       @doc """
       Imperative method for parseing the source with the engine provided by the module configuration.
       """
-      @spec parse!(String.t) :: List.t | Map.t | Keyword.t
+      @spec parse!(String.t()) :: List.t() | Map.t() | Keyword.t()
       def parse!(text) do
+        IO.inspect(parse(text))
+
         case parse(text) do
           {:ok, parsed} -> parsed
           e = {:error, _} -> raise e
@@ -47,7 +49,7 @@ defmodule Saasy.Parser do
   @doc """
   Gets data parser by extension without side effects
   """
-  @spec get(String.t) :: {:ok, parser} | {:error, String.t}
+  @spec get(String.t()) :: {:ok, parser} | {:error, String.t()}
   def get(filename) do
     case Path.extname(filename) do
       ".yml" -> {:ok, Saasy.Parser.Yml}
@@ -60,7 +62,7 @@ defmodule Saasy.Parser do
   @doc """
   Retrieves the data parser in an imperative style
   """
-  @spec get!(String.t) :: parser
+  @spec get!(String.t()) :: parser
   def get!(filename) do
     case get(filename) do
       {:ok, parser} -> parser
@@ -71,26 +73,22 @@ defmodule Saasy.Parser do
   @doc """
   Reads content from a file and converts it to a data structure
   """
-  @spec parse(String.t) :: {:ok, List.t | Keyword.t | Map.t} | {:error, String.t}
-  def parse(filename) do
-    case File.read(filename) do
-      {:ok, contents} ->
-        case get(filename) do
-          {:ok, parser} -> apply(parser, :parse, [contents])
-          e = {:error, _} -> e
-        end
-
-      e = {:error, _} ->
-        e
+  @spec load(String.t()) :: {:ok, List.t() | Keyword.t() | Map.t()} | {:error, String.t()}
+  def load(filename) do
+    with {:ok, contents} <- File.read(filename),
+         {:ok, parser} <- get(filename) do
+      apply(parser, :parse, [contents])
+    else
+      e -> e
     end
   end
 
   @doc """
-  Imperative style of the parse method
+  Imperative style of the load method
   """
-  @spec parse!(String.t) :: List.t | Keyword.t | Map.t
-  def parse!(filename) do
-    case parse(filename) do
+  @spec load!(String.t()) :: List.t() | Keyword.t() | Map.t()
+  def load!(filename) do
+    case load(filename) do
       {:ok, parsed} -> parsed
       {:error, msg} -> raise msg
     end

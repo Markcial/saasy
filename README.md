@@ -1,6 +1,38 @@
 # Saasy
 
-**TODO: Add description**
+## Run command from scratch on you host
+
+Simply execute the `mix saasy` task. It will prompt you a similar message to this:
+
+```bash
+$ mix saasy
+Missing required argument
+Command: saasy --provider [PROVIDER].
+Description
+-----------
+Command that integrates data from different services. Converts their files with data to a native elixir format.
+--------------------------
+Usage
+-----
+  --provider: Name of the provider to import. Available ones are: capterra, softwareadvice
+```
+
+Then to import a provider just supply the `--provider` flag:
+
+```bash
+$ mix saasy --provider capterra
+Importing Categories: Bugs & Issue Tracking, Development Tools; Name: GitGHub; Twitter: @github
+Importing Categories: Instant Messaging & Chat, Web Collaboration, Productivity; Name: Slack; Twitter: @slackhq
+Importing Categories: Project Management, Project Collaboration, Development Tools; Name: JIRA Software; Twitter: @jira
+```
+
+## Create docker container
+
+Execute the task named `docker`
+
+```bash
+$ mix docker
+```
 
 ## Installation
 
