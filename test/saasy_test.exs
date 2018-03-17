@@ -10,14 +10,4 @@ defmodule SaasyTest do
     assert Saasy.feeds_folder()
            |> File.exists?()
   end
-
-  test "Normalize softwareadvice data structure" do
-    assert Saasy.normalize(
-      %{
-        "products" => []
-      },
-      "products"
-    ) == []
-  end
-
 end
