@@ -53,9 +53,7 @@ defmodule Saasy.MixProject do
   defp docker(_) do
     Mix.Shell.cmd(
       "docker build -t saasy .",
-      fn out ->
-        Mix.Shell.IO.info(out)
-      end
+      &IO.write/1
     )
     Mix.Shell.IO.info(~S"""
     Docker image build successfully
